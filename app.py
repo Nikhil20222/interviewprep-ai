@@ -1,3 +1,15 @@
+"""
+app.py
+------
+InterviewPrep AI - Phase 1
+
+Single-page flow by design: the user uploads a resume, one API call
+does extraction + parsing + analysis + ATS check + suggestions, and
+the results are rendered on the same page via JavaScript. This avoids
+relying on server-side session/state between requests, which keeps
+the app simple and reliable on Vercel's stateless serverless
+functions (no auth/history yet, per Phase 1 scope).
+"""
 
 import os
 import uuid
@@ -34,18 +46,20 @@ def analyze_resume():
         return jsonify({"success": False, "error": str(exc)}), 400
 
     try:
-        
+        # Save to /tmp (the only writable directory on Vercel serverless)
         temp_filename = f"{uuid.uuid4().hex}.{extension}"
         temp_path = os.path.join(Config.TEMP_UPLOAD_DIR, temp_filename)
         file_storage.save(temp_path)
 
-        
+        # 1. Extract raw text
         resume_text = extract_text(temp_path, extension)
 
-       
+        # 2. Parse structured fields (regex + AI)
         parsed_data = parse_resume(resume_text)
+        if parsed_data.get("_ai_warning"):
+            print(f"[AI WARNING - resume parsing] {parsed_data['_ai_warning']}")
 
-       
+        # 3. Generate scores + ATS + suggestions (one combined AI call)
         try:
             raw_insights = generate_insights(resume_text)
             analysis = format_analysis(raw_insights.get("scores", {}))
@@ -57,6 +71,7 @@ def analyze_resume():
             ats = fallback_ats()
             suggestions = fallback_suggestions()
             insights_warning = str(exc)
+            print(f"[AI WARNING - insights generation] {insights_warning}")
 
         response = {
             "success": True,
@@ -73,10 +88,10 @@ def analyze_resume():
 
     except FileExtractionError as exc:
         return jsonify({"success": False, "error": str(exc)}), 422
-    except Exception as exc:  
+    except Exception as exc:  # noqa: BLE001 - convert unexpected errors to a clean JSON response
         return jsonify({"success": False, "error": f"Unexpected error: {exc}"}), 500
     finally:
-        
+        # Always clean up the temp file, per Phase 1 rules (no persistent storage)
         safe_remove(temp_path)
 
 
@@ -94,4 +109,19 @@ def file_too_large(_error):
 
 
 if __name__ == "__main__":
+    _key_map = {
+        "groq": Config.GROQ_API_KEY,
+        "gemini": Config.GEMINI_API_KEY,
+        "openrouter": Config.OPENROUTER_API_KEY,
+    }
+    _active_key = _key_map.get(Config.AI_PROVIDER, "")
+    print("=" * 60)
+    print(f"AI_PROVIDER = {Config.AI_PROVIDER}")
+    if _active_key:
+        print(f"API key detected for '{Config.AI_PROVIDER}': {_active_key[:4]}...{_active_key[-4:]}")
+    else:
+        print(f"WARNING: No API key found for '{Config.AI_PROVIDER}'. "
+              f"Check your .env file has the correct variable name and that "
+              f"you restarted the app after editing it.")
+    print("=" * 60)
     app.run(debug=True, port=5000)

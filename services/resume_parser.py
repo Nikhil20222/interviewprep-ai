@@ -1,3 +1,15 @@
+"""
+resume_parser.py
+-----------------
+Turns raw resume text into a structured dictionary.
+
+Design decision: contact-style fields (email, phone, LinkedIn, GitHub,
+portfolio) are extracted with regex first, because these are
+deterministic and regex is more reliable than an LLM for them and
+avoids hallucination. Everything that requires understanding/context
+(skills, education, experience, projects, etc.) is handed to the AI
+provider with an explicit "never invent, say Not Found" instruction.
+"""
 
 import re
 
@@ -10,7 +22,9 @@ PHONE_RE = re.compile(r"(\+?\d{1,3}[-.\s]?)?\(?\d{3,4}\)?[-.\s]?\d{3,4}[-.\s]?\d
 LINKEDIN_RE = re.compile(r"(https?://)?(www\.)?linkedin\.com/in/[A-Za-z0-9\-_/]+", re.IGNORECASE)
 GITHUB_RE = re.compile(r"(https?://)?(www\.)?github\.com/[A-Za-z0-9\-_/]+", re.IGNORECASE)
 PORTFOLIO_RE = re.compile(
-    r"(https?://)?(www\.)?[A-Za-z0-9\-]+\.(dev|me|io|com|in|xyz|net)(/[A-Za-z0-9\-_/]*)?",
+    r"(https?://[A-Za-z0-9\-]+\.(dev|me|io|com|in|xyz|net)(/[A-Za-z0-9\-_/]*)?"
+    r"|www\.[A-Za-z0-9\-]+\.(dev|me|io|com|in|xyz|net)(/[A-Za-z0-9\-_/]*)?"
+    r"|[A-Za-z0-9\-]+\.(dev|me|io|xyz)(/[A-Za-z0-9\-_/]*)?)",
     re.IGNORECASE,
 )
 
@@ -60,6 +74,9 @@ CRITICAL RULES:
 - Never invent, guess, or assume information that is not clearly present in the text.
 - If a field cannot be found, its value MUST be exactly "Not Found".
 - Only extract what is explicitly written in the resume text.
+- Look carefully through the ENTIRE text (including headers, footers, and lines with
+  icons or unusual spacing) for contact details like email, phone, LinkedIn, GitHub,
+  and portfolio links - these are often at the very top of the resume.
 - Respond with ONLY a valid JSON object, no markdown, no explanation, no preamble.
 """
 
@@ -67,6 +84,11 @@ _USER_PROMPT_TEMPLATE = """Extract the following fields from this resume text an
 with exactly these keys:
 
 - full_name (string)
+- email (string)
+- phone (string)
+- linkedin (string, full URL or handle if present)
+- github (string, full URL or handle if present)
+- portfolio (string, personal website URL if present, not linkedin/github)
 - skills (array of strings)
 - programming_languages (array of strings)
 - frameworks (array of strings)
@@ -78,8 +100,8 @@ with exactly these keys:
 - achievements (array of strings)
 - languages (array of strings)
 
+If any string field cannot be found, use exactly "Not Found".
 If an array field has no items, return an empty array [].
-If full_name cannot be found, use "Not Found".
 
 Resume text:
 ---
@@ -94,6 +116,11 @@ def _empty_ai_fields() -> dict:
     """Fallback structure used if the AI call fails, so the app degrades gracefully."""
     return {
         "full_name": NOT_FOUND,
+        "email": NOT_FOUND,
+        "phone": NOT_FOUND,
+        "linkedin": NOT_FOUND,
+        "github": NOT_FOUND,
+        "portfolio": NOT_FOUND,
         "skills": [],
         "programming_languages": [],
         "frameworks": [],
@@ -109,11 +136,15 @@ def _empty_ai_fields() -> dict:
 
 def parse_resume(resume_text: str) -> dict:
     """
-    Returns a merged dict of contact fields (regex) + content fields (AI).
-    Never raises: on AI failure, content fields fall back to empty/Not Found
-    so the rest of the app (preview, analyzer, etc.) can still render.
+    AI is the primary source for every field, including contact details -
+    this handles unusual resume layouts (tables, icons, odd spacing) far
+    better than fixed regex patterns. A lightweight regex pass still runs
+    as a silent backup: if the AI returns "Not Found" for a contact field
+    but regex finds a plausible match, that match is used instead. Never
+    raises: on AI failure, fields fall back to regex-only / empty so the
+    rest of the app can still render.
     """
-    contact_fields = _extract_contact_fields(resume_text)
+    regex_fields = _extract_contact_fields(resume_text)
 
     ai_error = None
     try:
@@ -130,7 +161,11 @@ def parse_resume(resume_text: str) -> dict:
     for key, default_value in defaults.items():
         ai_fields.setdefault(key, default_value)
 
-    parsed = {**contact_fields, **ai_fields}
+    # Silent backup: if AI missed a contact field, use the regex match instead
+    for key in ("email", "phone", "linkedin", "github", "portfolio"):
+        if ai_fields.get(key) in (NOT_FOUND, "", None) and regex_fields.get(key, NOT_FOUND) != NOT_FOUND:
+            ai_fields[key] = regex_fields[key]
+
     if ai_error:
-        parsed["_ai_warning"] = ai_error
-    return parsed
+        ai_fields["_ai_warning"] = ai_error
+    return ai_fields

@@ -1,4 +1,17 @@
+"""
+insights_generator.py
+----------------------
+Makes ONE combined AI call that produces resume analysis scores,
+ATS compatibility results, and improvement suggestions together.
 
+Why combined into one call instead of three separate service calls:
+free-tier AI APIs (Groq/Gemini/OpenRouter) have request-per-minute
+limits, so bundling related analysis into a single prompt keeps the
+app well within those limits (2 AI calls total per resume: one for
+parsing, one for this bundle) while still keeping the *code* split
+into separate, single-responsibility modules
+(resume_analyzer.py / ats_checker.py / suggestions_generator.py).
+"""
 
 from services.ai_client import generate_json, AIClientError
 

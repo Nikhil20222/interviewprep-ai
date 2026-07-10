@@ -1,3 +1,11 @@
+"""
+resume_analyzer.py
+--------------------
+Takes the "scores" slice of the AI insights response and turns it into
+a clean, guaranteed-complete structure for the template — filling
+sensible defaults if the AI omitted a field, and clamping scores to
+the valid 0-100 range.
+"""
 
 SCORE_KEYS = [
     "overall_score",

@@ -1,3 +1,10 @@
+"""
+validators.py
+-------------
+File validation helpers: extension, size, and empty-file checks.
+Kept separate from routes so validation rules can be reused/tested
+independently and extended in later phases (e.g. JD uploads in Phase 2).
+"""
 
 import os
 from config import Config
@@ -14,7 +21,10 @@ def get_extension(filename: str) -> str:
 
 
 def validate_file(file_storage) -> str:
-    
+    """
+    Validates a Flask FileStorage object.
+    Returns the lowercase extension on success, raises ValidationError otherwise.
+    """
     if file_storage is None or file_storage.filename == "":
         raise ValidationError("No file was selected.")
 

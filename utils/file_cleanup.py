@@ -1,4 +1,9 @@
-
+"""
+file_cleanup.py
+----------------
+Small helper to guarantee temp files written to /tmp during a request
+are removed afterwards, even on Vercel's serverless filesystem.
+"""
 
 import os
 

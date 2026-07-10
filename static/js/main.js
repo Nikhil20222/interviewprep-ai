@@ -1,10 +1,15 @@
-
+/* ==========================================================
+   InterviewPrep AI - Phase 1 frontend logic
+   Handles: drag & drop upload, client-side validation,
+   sending the file to /api/analyze-resume, and rendering
+   the preview / analyzer / ATS / suggestions sections.
+   ========================================================== */
 
 (function () {
   "use strict";
 
   const ALLOWED_EXTENSIONS = ["pdf", "docx", "txt"];
-  const MAX_SIZE_MB = 5; 
+  const MAX_SIZE_MB = 5; // kept in sync with server-side default; server is the source of truth
 
   const dropzone = document.getElementById("dropzone");
   const fileInput = document.getElementById("file-input");
@@ -19,6 +24,8 @@
   const resultsSection = document.getElementById("results-section");
 
   let selectedFile = null;
+
+  /* ---------------- Icons (small inline SVG set, reused across cards) ---------------- */
   const ICONS = {
     user: '<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6"/>',
     tag: '<path d="M3 8V4a1 1 0 0 1 1-1h4l9 9-5 5-9-9Z"/><circle cx="6.5" cy="6.5" r="1"/>',
@@ -34,6 +41,7 @@
     return `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ICONS.tag}</svg>`;
   }
 
+  /* ---------------- Helpers ---------------- */
 
   function showError(message) {
     errorMessage.textContent = message;
@@ -74,7 +82,7 @@
     return `<div class="tag-list">${items.map((i) => `<span class="tag">${escapeHtml(i)}</span>`).join("")}</div>`;
   }
 
- 
+  /* ---------------- File selection handling ---------------- */
 
   function handleFileSelected(file) {
     clearError();
@@ -133,7 +141,7 @@
 
   removeFileBtn.addEventListener("click", resetUpload);
 
-
+  /* ---------------- Upload & analyze ---------------- */
 
   analyzeBtn.addEventListener("click", async () => {
     if (!selectedFile) {
@@ -168,7 +176,7 @@
       resultsSection.hidden = false;
       resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
 
-      
+      // Reset the upload widget so the user can try another file if they want
       resetUpload();
     } catch (err) {
       loadingIndicator.hidden = true;
@@ -177,7 +185,24 @@
     }
   });
 
+  /* ---------------- Rendering: Preview ---------------- */
+
   function renderResults(data) {
+    const banner = document.getElementById("ai-warning-banner");
+    const warnings = [];
+    if (data.parsed_data && data.parsed_data._ai_warning) {
+      warnings.push(data.parsed_data._ai_warning);
+    }
+    if (data.insights_warning) {
+      warnings.push(data.insights_warning);
+    }
+    if (warnings.length > 0) {
+      banner.innerHTML = `⚠ AI analysis had a problem: ${escapeHtml(warnings.join(" | "))}. Contact fields and content shown below may be incomplete. Check your AI_PROVIDER / API key configuration.`;
+      banner.hidden = false;
+    } else {
+      banner.hidden = true;
+    }
+
     renderPreview(data.parsed_data);
     renderAnalyzer(data.analysis);
     renderAts(data.ats);
@@ -188,6 +213,7 @@
     const grid = document.getElementById("preview-grid");
     grid.innerHTML = "";
 
+    // Personal Information
     grid.innerHTML += `
       <div class="info-card">
         <div class="info-card-title">${icon("user")} Personal Information</div>
@@ -206,21 +232,21 @@
           .join("")}
       </div>`;
 
-   
+    // Skills
     grid.innerHTML += `
       <div class="info-card">
         <div class="info-card-title">${icon("tag")} Skills</div>
         ${renderTags(p.skills)}
       </div>`;
 
-    
+    // Programming Languages
     grid.innerHTML += `
       <div class="info-card">
         <div class="info-card-title">${icon("tag")} Programming Languages</div>
         ${renderTags(p.programming_languages)}
       </div>`;
 
-    
+    // Frameworks & Tools
     const frameworksTools = [...(p.frameworks || []), ...(p.tools || [])];
     grid.innerHTML += `
       <div class="info-card">
@@ -228,7 +254,7 @@
         ${renderTags(frameworksTools)}
       </div>`;
 
- 
+    // Education
     grid.innerHTML += `
       <div class="info-card">
         <div class="info-card-title">${icon("book")} Education</div>

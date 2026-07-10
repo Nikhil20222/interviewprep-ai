@@ -4,6 +4,7 @@
 
 {% block content %}
 
+<!-- ============ UPLOAD SECTION ============ -->
 <section class="card upload-card" id="upload-section">
   <h1 class="section-title">Upload Your Resume</h1>
   <p class="section-subtitle">
@@ -43,28 +44,33 @@
   <div class="error-message" id="error-message" hidden></div>
 </section>
 
+<!-- ============ RESULTS ============ -->
 <section id="results-section" hidden>
 
- 
+  <div class="ai-warning-banner" id="ai-warning-banner" hidden></div>
+
+
+  <!-- ---- Resume Preview ---- -->
   <section class="results-block">
     <h2 class="results-heading">Resume Preview</h2>
     <div class="grid" id="preview-grid"></div>
   </section>
 
-
+  <!-- ---- Resume Analyzer ---- -->
   <section class="results-block">
     <h2 class="results-heading">Resume Analyzer</h2>
     <div class="overall-score-banner" id="overall-score-banner"></div>
     <div class="grid" id="analyzer-grid"></div>
   </section>
 
-
+  <!-- ---- ATS Score ---- -->
   <section class="results-block">
     <h2 class="results-heading">ATS Compatibility</h2>
     <div class="overall-score-banner" id="ats-overall-banner"></div>
     <div class="ats-list" id="ats-list"></div>
   </section>
 
+  <!-- ---- Suggestions ---- -->
   <section class="results-block">
     <h2 class="results-heading">Suggestions</h2>
     <div class="suggestions-list" id="suggestions-list"></div>
