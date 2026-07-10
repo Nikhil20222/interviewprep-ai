@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}InterviewPrep AI - Resume Upload{% endblock %}
+
+{% block content %}
+
+<!-- ============ UPLOAD SECTION ============ -->
+<section class="card upload-card" id="upload-section">
+  <h1 class="section-title">Upload Your Resume</h1>
+  <p class="section-subtitle">
+    PDF, DOCX or TXT · Max {{ max_size_mb }}MB · Analyzed instantly, never stored
+  </p>
+
+  <div class="dropzone" id="dropzone">
+    <input type="file" id="file-input" accept=".pdf,.docx,.txt" hidden>
+    <div class="dropzone-content" id="dropzone-content">
+      <svg class="icon icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <p class="dropzone-text">Drag &amp; drop your resume here</p>
+      <p class="dropzone-or">or</p>
+      <button type="button" class="btn btn-primary" id="browse-btn">Choose File</button>
+    </div>
+  </div>
+
+  <div class="file-info" id="file-info" hidden>
+    <div class="file-info-row">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <path d="M14 2v6h6"/>
+      </svg>
+      <span class="file-name" id="file-name">filename.pdf</span>
+      <button type="button" class="btn-remove" id="remove-file-btn" title="Remove file">&times;</button>
+    </div>
+    <button type="button" class="btn btn-primary btn-block" id="analyze-btn">Analyze Resume</button>
+  </div>
+
+  <div class="loading" id="loading-indicator" hidden>
+    <div class="spinner"></div>
+    <p>Analyzing your resume — this can take a few seconds...</p>
+  </div>
+
+  <div class="error-message" id="error-message" hidden></div>
+</section>
+
+<!-- ============ RESULTS ============ -->
+<section id="results-section" hidden>
+
+  <!-- ---- Resume Preview ---- -->
+  <section class="results-block">
+    <h2 class="results-heading">Resume Preview</h2>
+    <div class="grid" id="preview-grid"></div>
+  </section>
+
+  <!-- ---- Resume Analyzer ---- -->
+  <section class="results-block">
+    <h2 class="results-heading">Resume Analyzer</h2>
+    <div class="overall-score-banner" id="overall-score-banner"></div>
+    <div class="grid" id="analyzer-grid"></div>
+  </section>
+
+  <!-- ---- ATS Score ---- -->
+  <section class="results-block">
+    <h2 class="results-heading">ATS Compatibility</h2>
+    <div class="overall-score-banner" id="ats-overall-banner"></div>
+    <div class="ats-list" id="ats-list"></div>
+  </section>
+
+  <!-- ---- Suggestions ---- -->
+  <section class="results-block">
+    <h2 class="results-heading">Suggestions</h2>
+    <div class="suggestions-list" id="suggestions-list"></div>
+  </section>
+
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}
