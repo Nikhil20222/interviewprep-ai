@@ -127,6 +127,13 @@ If the AI call fails (bad key, rate limit, network issue), the app doesn't crash
   `insights_warning` field is included in the JSON response so this is easy to
   surface/log/debug.
 
+
+  ## DEMO
+  <img width="1912" height="977" alt="as" src="https://github.com/user-attachments/assets/4abf62a0-e9d1-4345-95b0-f30d0ace5fae" />
+
+  <img width="1907" height="920" alt="sd" src="https://github.com/user-attachments/assets/b5f78e05-98dc-461c-a374-68c587de3293" />
+
+
 ## What's ready for Phase 2+
 
 - `services/ai_client.py` already supports 3 providers — adding a 4th for
