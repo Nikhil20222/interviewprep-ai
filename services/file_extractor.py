@@ -1,11 +1,3 @@
-"""
-file_extractor.py
-------------------
-Pulls raw text out of an uploaded resume file. Supports PDF, DOCX, TXT.
-All extraction happens in-memory / on the temp path passed in — callers
-are responsible for cleaning up the temp file afterwards
-(see utils/file_cleanup.py).
-"""
 
 import pdfplumber
 from docx import Document

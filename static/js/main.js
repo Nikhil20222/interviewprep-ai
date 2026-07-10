@@ -1,9 +1,4 @@
-/* ==========================================================
-   InterviewPrep AI - Phase 1 frontend logic
-   Handles: drag & drop upload, client-side validation,
-   sending the file to /api/analyze-resume, and rendering
-   the preview / analyzer / ATS / suggestions sections.
-   ========================================================== */
+
 
 (function () {
   "use strict";
@@ -39,7 +34,6 @@
     return `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ICONS.tag}</svg>`;
   }
 
-  /* ---------------- Helpers ---------------- */
 
   function showError(message) {
     errorMessage.textContent = message;
@@ -80,7 +74,7 @@
     return `<div class="tag-list">${items.map((i) => `<span class="tag">${escapeHtml(i)}</span>`).join("")}</div>`;
   }
 
-  /* ---------------- File selection handling ---------------- */
+ 
 
   function handleFileSelected(file) {
     clearError();
@@ -139,7 +133,7 @@
 
   removeFileBtn.addEventListener("click", resetUpload);
 
-  /* ---------------- Upload & analyze ---------------- */
+
 
   analyzeBtn.addEventListener("click", async () => {
     if (!selectedFile) {
@@ -174,7 +168,7 @@
       resultsSection.hidden = false;
       resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
 
-      // Reset the upload widget so the user can try another file if they want
+      
       resetUpload();
     } catch (err) {
       loadingIndicator.hidden = true;
@@ -182,8 +176,6 @@
       showError("Could not reach the server. Please try again.");
     }
   });
-
-  /* ---------------- Rendering: Preview ---------------- */
 
   function renderResults(data) {
     renderPreview(data.parsed_data);
@@ -196,7 +188,6 @@
     const grid = document.getElementById("preview-grid");
     grid.innerHTML = "";
 
-    // Personal Information
     grid.innerHTML += `
       <div class="info-card">
         <div class="info-card-title">${icon("user")} Personal Information</div>
@@ -215,21 +206,21 @@
           .join("")}
       </div>`;
 
-    // Skills
+   
     grid.innerHTML += `
       <div class="info-card">
         <div class="info-card-title">${icon("tag")} Skills</div>
         ${renderTags(p.skills)}
       </div>`;
 
-    // Programming Languages
+    
     grid.innerHTML += `
       <div class="info-card">
         <div class="info-card-title">${icon("tag")} Programming Languages</div>
         ${renderTags(p.programming_languages)}
       </div>`;
 
-    // Frameworks & Tools
+    
     const frameworksTools = [...(p.frameworks || []), ...(p.tools || [])];
     grid.innerHTML += `
       <div class="info-card">
@@ -237,7 +228,7 @@
         ${renderTags(frameworksTools)}
       </div>`;
 
-    // Education
+ 
     grid.innerHTML += `
       <div class="info-card">
         <div class="info-card-title">${icon("book")} Education</div>

@@ -1,9 +1,3 @@
-"""
-ats_checker.py
----------------
-Takes the "ats" slice of the AI insights response and turns it into a
-clean, guaranteed-complete structure for the template.
-"""
 
 VALID_STATUSES = {"Good", "Needs Improvement", "Missing"}
 

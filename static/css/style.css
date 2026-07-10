@@ -1,4 +1,4 @@
-/* ============ Reset & base ============ */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -19,7 +19,6 @@ body {
   padding: 0 20px;
 }
 
-/* ============ Header / Footer ============ */
 .site-header {
   border-bottom: 1px solid #e5e5e5;
   padding: 18px 0;
@@ -60,7 +59,6 @@ main.container {
   padding-bottom: 32px;
 }
 
-/* ============ Cards ============ */
 .card {
   background-color: #ffffff;
   border: 1px solid #e2e2e2;
@@ -81,7 +79,6 @@ main.container {
   margin-bottom: 24px;
 }
 
-/* ============ Dropzone ============ */
 .dropzone {
   border: 2px dashed #cccccc;
   border-radius: 8px;
@@ -127,7 +124,6 @@ main.container {
   color: #999999;
 }
 
-/* ============ Buttons ============ */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -189,7 +185,6 @@ main.container {
   border-color: #16a34a;
 }
 
-/* ============ File info ============ */
 .file-info {
   margin-top: 20px;
   border: 1px solid #e2e2e2;
@@ -211,7 +206,6 @@ main.container {
   word-break: break-all;
 }
 
-/* ============ Loading ============ */
 .loading {
   margin-top: 20px;
   text-align: center;
@@ -235,7 +229,6 @@ main.container {
   }
 }
 
-/* ============ Error ============ */
 .error-message {
   margin-top: 16px;
   background-color: #fef2f2;
@@ -246,7 +239,6 @@ main.container {
   font-size: 13.5px;
 }
 
-/* ============ Results layout ============ */
 .results-block {
   margin-top: 44px;
 }
@@ -265,7 +257,6 @@ main.container {
   gap: 16px;
 }
 
-/* ============ Preview cards ============ */
 .info-card {
   border: 1px solid #e2e2e2;
   border-radius: 8px;
@@ -356,7 +347,6 @@ main.container {
   font-style: italic;
 }
 
-/* ============ Analyzer scores ============ */
 .overall-score-banner {
   display: flex;
   align-items: baseline;
@@ -427,7 +417,7 @@ main.container {
   color: #666666;
 }
 
-/* ============ ATS list ============ */
+
 .ats-list {
   display: flex;
   flex-direction: column;
@@ -478,7 +468,7 @@ main.container {
   color: #dc2626;
 }
 
-/* ============ Suggestions ============ */
+
 .suggestions-list {
   display: flex;
   flex-direction: column;
@@ -538,7 +528,7 @@ main.container {
   margin-top: 8px;
 }
 
-/* ============ Responsive ============ */
+
 @media (max-width: 640px) {
   .card {
     padding: 20px;

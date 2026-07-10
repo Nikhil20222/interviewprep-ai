@@ -1,15 +1,3 @@
-"""
-ai_client.py
-------------
-Single point of contact between InterviewPrep AI and whichever LLM
-provider is configured. Every other service file calls
-`generate_json(...)` and does not need to know or care whether the
-request is going to Groq, Gemini, or OpenRouter.
-
-Adding a new provider later (Phase 4 "Multi-AI Support") just means
-adding one more `_call_<provider>` function and one line in
-`_dispatch`.
-"""
 
 import json
 import re

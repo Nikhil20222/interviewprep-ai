@@ -1,10 +1,3 @@
-"""
-suggestions_generator.py
---------------------------
-Takes the "suggestions" slice of the AI insights response and turns it
-into a clean list for the template, dropping any malformed entries
-rather than letting a bad AI response break the page.
-"""
 
 
 def format_suggestions(raw_suggestions: list) -> list:
