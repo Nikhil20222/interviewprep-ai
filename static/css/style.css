@@ -1,4 +1,4 @@
-/* ============ Reset & base ============ */
+/* Base */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -19,13 +19,21 @@ body {
   padding: 0 20px;
 }
 
-/* ============ Header / Footer ============ */
+/* Header / footer */
 .site-header {
   border-bottom: 1px solid #e5e5e5;
   padding: 18px 0;
 }
 
-.site-header .container {
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.brand-block {
   display: flex;
   align-items: baseline;
   gap: 10px;
@@ -34,7 +42,6 @@ body {
 .brand {
   font-size: 20px;
   font-weight: 700;
-  color: #1a1a1a;
 }
 
 .brand-accent {
@@ -46,6 +53,54 @@ body {
   color: #777777;
 }
 
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.nav-link {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #555555;
+  text-decoration: none;
+  padding: 6px 4px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-link:hover {
+  color: #2563eb;
+}
+
+.nav-link-active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+.theme-toggle {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e2e2;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #555555;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  background-color: #f5f5f5;
+  color: #2563eb;
+}
+
+main.container {
+  padding: 32px 20px;
+}
+
 .site-footer {
   border-top: 1px solid #e5e5e5;
   margin-top: 60px;
@@ -55,18 +110,17 @@ body {
   text-align: center;
 }
 
-main.container {
-  padding-top: 32px;
-  padding-bottom: 32px;
-}
-
-/* ============ Cards ============ */
+/* Cards */
 .card {
   background-color: #ffffff;
   border: 1px solid #e2e2e2;
   border-radius: 8px;
   padding: 28px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.upload-box {
+  /* same look as .card, just a clearer name for the upload panel */
 }
 
 .section-title {
@@ -81,14 +135,151 @@ main.container {
   margin-bottom: 24px;
 }
 
-/* ============ Dropzone ============ */
+.section {
+  margin-top: 44px;
+}
+
+.section-heading {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ececec;
+}
+
+.info-card,
+.score-card,
+.suggestion-card {
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  padding: 18px;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.info-card:hover,
+.score-card:hover,
+.suggestion-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-color: #cfcfcf;
+}
+
+.info-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.info-card-title .icon {
+  color: #2563eb;
+}
+
+.col-heading {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ececec;
+}
+
+/* Grids */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #2563eb;
+  color: #ffffff;
+  transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.btn-block {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: #999999;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.btn-remove:hover {
+  color: #dc2626;
+}
+
+.btn-copy {
+  background-color: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #2563eb;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-copy:hover {
+  background-color: #f5f8ff;
+  border-color: #2563eb;
+}
+
+.btn-copy.copied {
+  color: #16a34a;
+  border-color: #16a34a;
+}
+
+/* Dropzone / file input */
 .dropzone {
   border: 2px dashed #cccccc;
   border-radius: 8px;
   padding: 40px 20px;
   text-align: center;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
   cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.dropzone:hover {
+  border-color: #a0a0a0;
 }
 
 .dropzone.dragover {
@@ -127,69 +318,6 @@ main.container {
   color: #999999;
 }
 
-/* ============ Buttons ============ */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-}
-
-.btn-primary {
-  background-color: #2563eb;
-  color: #ffffff;
-}
-
-.btn-primary:hover {
-  background-color: #1d4ed8;
-}
-
-.btn-block {
-  width: 100%;
-  margin-top: 14px;
-}
-
-.btn-remove {
-  background: none;
-  border: none;
-  color: #999999;
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  padding: 4px 8px;
-}
-
-.btn-remove:hover {
-  color: #dc2626;
-}
-
-.btn-copy {
-  background-color: #ffffff;
-  border: 1px solid #d0d0d0;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #2563eb;
-  cursor: pointer;
-}
-
-.btn-copy:hover {
-  background-color: #f5f8ff;
-}
-
-.btn-copy.copied {
-  color: #16a34a;
-  border-color: #16a34a;
-}
-
-/* ============ File info ============ */
 .file-info {
   margin-top: 20px;
   border: 1px solid #e2e2e2;
@@ -207,11 +335,64 @@ main.container {
   flex: 1;
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a1a;
   word-break: break-all;
 }
 
-/* ============ Loading ============ */
+/* Tabs (job description: upload vs paste) */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.tab-btn {
+  border: 1px solid #d0d0d0;
+  background-color: #ffffff;
+  color: #555555;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.tab-btn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.tab-btn.active {
+  background-color: #eff4ff;
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 160px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  padding: 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  resize: vertical;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* Loading / errors / warnings */
 .loading {
   margin-top: 20px;
   text-align: center;
@@ -230,12 +411,9 @@ main.container {
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
-/* ============ Error ============ */
 .error-message {
   margin-top: 16px;
   background-color: #fef2f2;
@@ -246,7 +424,6 @@ main.container {
   font-size: 13.5px;
 }
 
-/* ============ Results layout ============ */
 .ai-warning-banner {
   background-color: #fffaeb;
   border: 1px solid #fcd34d;
@@ -257,45 +434,7 @@ main.container {
   margin-bottom: 24px;
 }
 
-.results-block {
-  margin-top: 44px;
-}
-
-.results-heading {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #ececec;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-}
-
-/* ============ Preview cards ============ */
-.info-card {
-  border: 1px solid #e2e2e2;
-  border-radius: 8px;
-  padding: 18px;
-}
-
-.info-card-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #1a1a1a;
-}
-
-.info-card-title .icon {
-  color: #2563eb;
-}
-
+/* Tags / rows / entries used inside info cards */
 .info-row {
   display: flex;
   justify-content: space-between;
@@ -315,7 +454,6 @@ main.container {
 
 .info-row .value {
   text-align: right;
-  color: #1a1a1a;
   font-weight: 500;
   word-break: break-word;
 }
@@ -366,38 +504,72 @@ main.container {
   font-style: italic;
 }
 
-/* ============ Analyzer scores ============ */
-.overall-score-banner {
+/* Stats row (word count, pages, skills found, etc - plain numbers) */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.stat-box {
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #888888;
+  margin-top: 2px;
+}
+
+/* Score banners (overall score, ATS score, match %) */
+.score-banner,
+.match-banner {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
   border: 1px solid #e2e2e2;
   border-radius: 8px;
   padding: 18px 22px;
   margin-bottom: 16px;
 }
 
-.overall-score-banner .score-number {
+.score-banner .score-number,
+.match-banner .score-number {
   font-size: 34px;
   font-weight: 700;
   color: #2563eb;
 }
 
-.overall-score-banner .score-out-of {
+.score-banner .score-out-of {
   font-size: 14px;
   color: #999999;
 }
 
-.overall-score-banner .score-label {
+.score-banner .score-label {
   margin-left: auto;
   font-size: 13.5px;
   color: #666666;
 }
 
-.score-card {
-  border: 1px solid #e2e2e2;
-  border-radius: 8px;
-  padding: 16px;
+.match-banner .score-number {
+  font-size: 40px;
+}
+
+.match-banner .summary-text {
+  font-size: 13.5px;
+  color: #555555;
+  flex: 1;
+  min-width: 200px;
 }
 
 .score-card-header {
@@ -437,13 +609,46 @@ main.container {
   color: #666666;
 }
 
-/* ============ ATS list ============ */
-.ats-list {
+/* Checklist (plain pass/fail rows) */
+.checklist-row {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f2f2f2;
 }
 
+.checklist-row:last-child {
+  border-bottom: none;
+}
+
+.checklist-mark {
+  width: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.checklist-mark.pass {
+  color: #16a34a;
+}
+
+.checklist-mark.fail {
+  color: #dc2626;
+}
+
+.checklist-label {
+  font-weight: 600;
+  font-size: 13.5px;
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.checklist-reason {
+  font-size: 12.5px;
+  color: #777777;
+}
+
+/* ATS status rows */
 .ats-row {
   display: flex;
   align-items: center;
@@ -451,6 +656,13 @@ main.container {
   border: 1px solid #e2e2e2;
   border-radius: 8px;
   padding: 14px 18px;
+  margin-bottom: 10px;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.ats-row:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-color: #cfcfcf;
 }
 
 .ats-row-label {
@@ -488,30 +700,22 @@ main.container {
   color: #dc2626;
 }
 
-/* ============ Suggestions ============ */
-.suggestions-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.suggestion-card {
-  border: 1px solid #e2e2e2;
-  border-radius: 8px;
-  padding: 18px;
-}
-
-.suggestion-category {
-  display: inline-block;
-  font-size: 11.5px;
+/* Suggestions, grouped by category */
+.suggestion-group-title {
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: #2563eb;
-  background-color: #eff4ff;
-  padding: 3px 10px;
-  border-radius: 4px;
-  margin-bottom: 12px;
+  color: #666666;
+  margin: 20px 0 10px;
+}
+
+.suggestion-group-title:first-child {
+  margin-top: 0;
+}
+
+.suggestion-card {
+  margin-bottom: 14px;
 }
 
 .suggestion-text-block {
@@ -548,17 +752,67 @@ main.container {
   margin-top: 8px;
 }
 
-/* ============ Responsive ============ */
+/* Match page: skill/keyword badges */
+.badge-matched {
+  background-color: #ecfdf3;
+  color: #16a34a;
+  font-size: 12.5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.badge-missing {
+  background-color: #fef2f2;
+  color: #dc2626;
+  font-size: 12.5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.coverage-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 13px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.coverage-row:last-child {
+  border-bottom: none;
+}
+
+.list-plain {
+  padding-left: 18px;
+}
+
+.list-plain li {
+  font-size: 12.5px;
+  color: #555555;
+  margin-bottom: 6px;
+}
+
+.download-btn {
+  margin-top: 16px;
+}
+
+/* Responsive */
 @media (max-width: 640px) {
   .card {
     padding: 20px;
   }
 
-  .overall-score-banner {
-    flex-wrap: wrap;
+  .two-col {
+    grid-template-columns: 1fr;
   }
 
-  .overall-score-banner .score-label {
+  .score-banner .score-label {
     margin-left: 0;
     width: 100%;
   }
@@ -570,4 +824,287 @@ main.container {
   .suggestion-improved {
     flex-direction: column;
   }
+
+  .checklist-row {
+    flex-wrap: wrap;
+  }
+}
+
+/* ================================
+   Dark mode - toggled via body.dark
+   Plain hex values, no variables.
+   ================================ */
+body.dark {
+  background-color: #121212;
+  color: #e6e6e6;
+}
+body.dark .site-header,
+body.dark .site-footer {
+  border-color: #2a2a2a;
+}
+body.dark .brand,
+body.dark .section-title,
+body.dark .section-heading,
+body.dark .info-card-title,
+body.dark .entry-title,
+body.dark .score-card-label,
+body.dark .ats-row-label,
+body.dark .value,
+body.dark .file-name,
+body.dark .col-heading,
+body.dark .checklist-label {
+  color: #f0f0f0;
+}
+body.dark .brand-tagline,
+body.dark .site-footer,
+body.dark .section-subtitle,
+body.dark .dropzone-text,
+body.dark .dropzone-or,
+body.dark .entry-subtitle,
+body.dark .entry-desc,
+body.dark .score-card-explanation,
+body.dark .ats-row-note,
+body.dark .label,
+body.dark .empty-note,
+body.dark .checklist-reason,
+body.dark .stat-label,
+body.dark .summary-text,
+body.dark .suggestion-reason,
+body.dark .suggestion-group-title {
+  color: #9a9a9a;
+}
+body.dark .nav-link {
+  color: #b0b0b0;
+}
+body.dark .nav-link:hover,
+body.dark .nav-link-active {
+  color: #5b8def;
+  border-color: #5b8def;
+}
+body.dark .theme-toggle,
+body.dark .tab-btn {
+  background-color: #1a1a1a;
+  border-color: #333333;
+  color: #cccccc;
+}
+body.dark .theme-toggle:hover,
+body.dark .tab-btn:hover {
+  color: #5b8def;
+}
+body.dark .tab-btn.active {
+  background-color: #1a2233;
+  border-color: #5b8def;
+  color: #5b8def;
+}
+body.dark .card,
+body.dark .info-card,
+body.dark .score-card,
+body.dark .ats-row,
+body.dark .suggestion-card,
+body.dark .file-info,
+body.dark .score-banner,
+body.dark .match-banner,
+body.dark .stat-box,
+body.dark .tab-panel {
+  background-color: #1a1a1a;
+  border-color: #2e2e2e;
+}
+body.dark .info-card:hover,
+body.dark .score-card:hover,
+body.dark .ats-row:hover,
+body.dark .suggestion-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  border-color: #444444;
+}
+body.dark .section-heading,
+body.dark .col-heading,
+body.dark .info-row,
+body.dark .entry-block,
+body.dark .checklist-row,
+body.dark .coverage-row {
+  border-color: #262626;
+}
+body.dark .dropzone {
+  border-color: #3a3a3a;
+}
+body.dark .dropzone:hover {
+  border-color: #555555;
+}
+body.dark .dropzone.dragover {
+  border-color: #5b8def;
+  background-color: #1a2233;
+}
+body.dark .tag {
+  background-color: #262626;
+  color: #d0d0d0;
+}
+body.dark .score-bar-track {
+  background-color: #2a2a2a;
+}
+body.dark .btn-copy {
+  background-color: #1a1a1a;
+  border-color: #3a3a3a;
+  color: #5b8def;
+}
+body.dark .btn-copy:hover {
+  background-color: #222b40;
+}
+body.dark .btn-primary:hover {
+  box-shadow: 0 3px 8px rgba(91, 141, 239, 0.25);
+}
+body.dark .suggestion-current {
+  background-color: #3a1f1f;
+  color: #f5b8b8;
+}
+body.dark .suggestion-improved {
+  background-color: #1f3a26;
+  color: #b8f5c8;
+}
+body.dark .error-message {
+  background-color: #3a1f1f;
+  border-color: #6b2b2b;
+  color: #f5b8b8;
+}
+body.dark .ai-warning-banner {
+  background-color: #3a3220;
+  border-color: #6b5b2b;
+  color: #f0d98c;
+}
+body.dark .status-good,
+body.dark .badge-matched {
+  background-color: #16321f;
+  color: #4ade80;
+}
+body.dark .checklist-mark.pass {
+  color: #4ade80;
+}
+body.dark .status-needs-improvement {
+  background-color: #3a2e14;
+  color: #fbbf24;
+}
+body.dark .status-missing,
+body.dark .badge-missing {
+  background-color: #3a1f1f;
+  color: #f87171;
+}
+body.dark .checklist-mark.fail {
+  color: #f87171;
+}
+body.dark .list-plain li {
+  color: #b0b0b0;
+}
+
+/* ==========================================================
+   Accordion (collapsible sections) - replaces the old
+   dashboard-style grid-of-cards layout for results.
+   ========================================================== */
+
+.accordion {
+  border: 1px solid #e2e2e2;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.accordion-item {
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.accordion-item:last-child {
+  border-bottom: none;
+}
+
+.accordion-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  border: none;
+  text-align: left;
+  padding: 16px 20px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.accordion-header:hover {
+  background-color: #fafafa;
+}
+
+.accordion-item.open .accordion-header {
+  background-color: #f7f9fc;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.accordion-arrow {
+  font-size: 11px;
+  color: #888888;
+  transition: transform 0.15s ease;
+}
+
+.accordion-item.open .accordion-arrow {
+  transform: rotate(180deg);
+}
+
+.accordion-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease;
+}
+
+.accordion-item.open .accordion-panel {
+  max-height: 8000px;
+}
+
+.accordion-body {
+  padding: 24px 20px 28px;
+}
+
+.accordion-note {
+  font-size: 13px;
+  color: #777777;
+  margin-bottom: 14px;
+}
+
+.accordion-subheading {
+  font-size: 13px;
+  font-weight: 700;
+  color: #444444;
+  margin: 18px 0 10px;
+}
+
+.accordion-subheading:first-child {
+  margin-top: 0;
+}
+
+body.dark .accordion {
+  border-color: #2e2e2e;
+}
+
+body.dark .accordion-item {
+  border-color: #2e2e2e;
+}
+
+body.dark .accordion-header {
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+}
+
+body.dark .accordion-header:hover {
+  background-color: #202020;
+}
+
+body.dark .accordion-item.open .accordion-header {
+  background-color: #1f2733;
+  border-color: #2e2e2e;
+}
+
+body.dark .accordion-note {
+  color: #9a9a9a;
+}
+
+body.dark .accordion-subheading {
+  color: #cccccc;
 }

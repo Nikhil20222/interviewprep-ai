@@ -4,8 +4,7 @@
 
 {% block content %}
 
-<!-- ============ UPLOAD SECTION ============ -->
-<section class="card upload-card" id="upload-section">
+<section class="card upload-box" id="upload-box">
   <h1 class="section-title">Upload Your Resume</h1>
   <p class="section-subtitle">
     PDF, DOCX or TXT · Max {{ max_size_mb }}MB · Analyzed instantly, never stored
@@ -44,37 +43,87 @@
   <div class="error-message" id="error-message" hidden></div>
 </section>
 
-<!-- ============ RESULTS ============ -->
-<section id="results-section" hidden>
+
+<section id="result" hidden>
 
   <div class="ai-warning-banner" id="ai-warning-banner" hidden></div>
 
+  <div class="accordion">
 
-  <!-- ---- Resume Preview ---- -->
-  <section class="results-block">
-    <h2 class="results-heading">Resume Preview</h2>
-    <div class="grid" id="preview-grid"></div>
-  </section>
+  
+    <div class="accordion-item open">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        Resume Stats
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <div class="stats-row" id="stats-row"></div>
+        </div>
+      </div>
+    </div>
 
-  <!-- ---- Resume Analyzer ---- -->
-  <section class="results-block">
-    <h2 class="results-heading">Resume Analyzer</h2>
-    <div class="overall-score-banner" id="overall-score-banner"></div>
-    <div class="grid" id="analyzer-grid"></div>
-  </section>
 
-  <!-- ---- ATS Score ---- -->
-  <section class="results-block">
-    <h2 class="results-heading">ATS Compatibility</h2>
-    <div class="overall-score-banner" id="ats-overall-banner"></div>
-    <div class="ats-list" id="ats-list"></div>
-  </section>
+    <div class="accordion-item">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        Resume Analysis
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <div class="score-banner" id="score-banner"></div>
+          <div class="grid" id="analyzer-grid"></div>
+        </div>
+      </div>
+    </div>
 
-  <!-- ---- Suggestions ---- -->
-  <section class="results-block">
-    <h2 class="results-heading">Suggestions</h2>
-    <div class="suggestions-list" id="suggestions-list"></div>
-  </section>
+
+    <div class="accordion-item">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        ATS Report
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <div class="score-banner" id="ats-score-banner"></div>
+
+          <h3 class="accordion-subheading">Checklist</h3>
+          <div id="checklist"></div>
+
+          <h3 class="accordion-subheading">Missing Sections</h3>
+          <div id="missing-sections"></div>
+
+          <h3 class="accordion-subheading">Score Breakdown</h3>
+          <div class="ats-list" id="ats-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        Suggestions
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <div id="suggestion-groups"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        Resume Preview
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <div class="grid" id="preview-grid"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 
 </section>
 
