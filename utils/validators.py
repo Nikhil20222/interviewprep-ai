@@ -47,3 +47,24 @@ def validate_file(file_storage) -> str:
         )
 
     return extension
+
+
+def validate_pasted_text(text: str, min_length: int = 50) -> str:
+    """
+    Validates pasted job description text (Phase 2).
+    Purely additive - does not affect file-upload validation used in Phase 1.
+    Returns the cleaned/stripped text on success, raises ValidationError otherwise.
+    """
+    if text is None:
+        raise ValidationError("No job description text was provided.")
+
+    cleaned = text.strip()
+    if len(cleaned) == 0:
+        raise ValidationError("Job description text is empty.")
+
+    if len(cleaned) < min_length:
+        raise ValidationError(
+            f"Job description text is too short. Please paste at least {min_length} characters."
+        )
+
+    return cleaned
