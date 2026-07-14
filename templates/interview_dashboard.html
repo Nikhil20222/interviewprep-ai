@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}InterviewPrep AI - Mock Interview{% endblock %}
+
+{% block content %}
+
+<section class="card upload-box">
+  <h1 class="section-title">Mock Interview</h1>
+  <p class="section-subtitle">
+    Practice with questions generated from your resume and a target job description, then get AI feedback on your answers.
+  </p>
+
+  <div id="continue-card" hidden style="margin-bottom:18px;">
+    <div class="info-card">
+      <div class="info-card-title">Continue Interview</div>
+      <p class="entry-desc" id="continue-summary"></p>
+      <div style="display:flex; gap:10px; margin-top:12px;">
+        <button type="button" class="btn btn-primary" id="continue-btn">Continue</button>
+        <button type="button" class="btn-remove" id="discard-btn" title="Discard this interview">Discard</button>
+      </div>
+    </div>
+  </div>
+
+  <a href="/interview/setup" class="btn btn-primary btn-block">Start New Interview</a>
+
+  <p class="accordion-note" style="margin-top:16px;">
+    Note: interviews aren't saved to an account yet - each attempt only lasts for your current
+    browser session. Full history and saved reports are planned for a later phase.
+  </p>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const continueCard = document.getElementById("continue-card");
+    const continueSummary = document.getElementById("continue-summary");
+    const continueBtn = document.getElementById("continue-btn");
+    const discardBtn = document.getElementById("discard-btn");
+
+    const saved = localStorage.getItem("interview_in_progress");
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        const answered = data.answers ? data.answers.filter((a) => a && a.trim()).length : 0;
+        continueSummary.textContent = `${data.meta.role || "Interview"} - ${data.meta.interview_type} - question ${data.currentIndex + 1} of ${data.questions.length} (${answered} answered)`;
+        continueCard.hidden = false;
+      } catch (e) {
+        localStorage.removeItem("interview_in_progress");
+      }
+    }
+
+    continueBtn.addEventListener("click", () => {
+      window.location.href = "/interview/session?resume=1";
+    });
+
+    discardBtn.addEventListener("click", () => {
+      localStorage.removeItem("interview_in_progress");
+      continueCard.hidden = true;
+    });
+  })();
+</script>
+{% endblock %}

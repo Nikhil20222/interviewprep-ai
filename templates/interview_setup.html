@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}InterviewPrep AI - Interview Setup{% endblock %}
+
+{% block content %}
+
+<section class="card upload-box" id="setup-box">
+  <h1 class="section-title">Set Up Your Mock Interview</h1>
+  <p class="section-subtitle">
+    Upload your resume and the job description, then choose how you want to practice.
+  </p>
+
+  <div class="two-col">
+
+    <!-- Resume upload -->
+    <div>
+      <h3 class="col-heading">Resume</h3>
+      <div class="dropzone" id="resume-dropzone">
+        <input type="file" id="resume-file-input" accept=".pdf,.docx,.txt" hidden>
+        <div class="dropzone-content" id="resume-dropzone-content">
+          <svg class="icon icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p class="dropzone-text">Drag &amp; drop your resume</p>
+          <p class="dropzone-or">or</p>
+          <button type="button" class="btn btn-primary" id="resume-browse-btn">Choose File</button>
+        </div>
+      </div>
+      <div class="file-info" id="resume-file-info" hidden>
+        <div class="file-info-row">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="6" y="3" width="12" height="18" rx="1"/>
+            <line x1="9" y1="8" x2="15" y2="8"/>
+            <line x1="9" y1="12" x2="15" y2="12"/>
+            <line x1="9" y1="16" x2="12.5" y2="16"/>
+          </svg>
+          <span class="file-name" id="resume-file-name">filename.pdf</span>
+          <button type="button" class="btn-remove" id="remove-resume-btn" title="Remove file">&times;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job description input -->
+    <div>
+      <h3 class="col-heading">Job Description</h3>
+      <div class="tabs">
+        <button type="button" class="tab-btn active" id="jd-tab-upload-btn">Upload File</button>
+        <button type="button" class="tab-btn" id="jd-tab-paste-btn">Paste Text</button>
+      </div>
+
+      <div class="tab-panel active" id="jd-panel-upload">
+        <div class="dropzone" id="jd-dropzone">
+          <input type="file" id="jd-file-input" accept=".pdf,.docx,.txt" hidden>
+          <div class="dropzone-content" id="jd-dropzone-content">
+            <svg class="icon icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p class="dropzone-text">Drag &amp; drop the JD file</p>
+            <p class="dropzone-or">or</p>
+            <button type="button" class="btn btn-primary" id="jd-browse-btn">Choose File</button>
+          </div>
+        </div>
+        <div class="file-info" id="jd-file-info" hidden>
+          <div class="file-info-row">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="6" y="3" width="12" height="18" rx="1"/>
+              <line x1="9" y1="8" x2="15" y2="8"/>
+              <line x1="9" y1="12" x2="15" y2="12"/>
+              <line x1="9" y1="16" x2="12.5" y2="16"/>
+            </svg>
+            <span class="file-name" id="jd-file-name">jd.pdf</span>
+            <button type="button" class="btn-remove" id="remove-jd-btn" title="Remove file">&times;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="jd-panel-paste">
+        <textarea class="textarea" id="jd-text-input" placeholder="Paste the job description here..."></textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <h3 class="col-heading" style="margin-top:26px;">Interview Options</h3>
+
+  <div class="form-row">
+    <label class="form-label" for="role-input">Job Role (optional)</label>
+    <input type="text" class="input-field" id="role-input" placeholder="e.g. Backend Developer">
+  </div>
+
+  <div class="form-row">
+    <label class="form-label">Interview Type</label>
+    <div class="tabs" id="type-tabs">
+      <button type="button" class="tab-btn active" data-value="Mixed">Mixed</button>
+      <button type="button" class="tab-btn" data-value="Technical">Technical</button>
+      <button type="button" class="tab-btn" data-value="HR">HR</button>
+      <button type="button" class="tab-btn" data-value="Behavioural">Behavioural</button>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <label class="form-label">Difficulty</label>
+    <div class="tabs" id="difficulty-tabs">
+      <button type="button" class="tab-btn" data-value="Easy">Easy</button>
+      <button type="button" class="tab-btn active" data-value="Medium">Medium</button>
+      <button type="button" class="tab-btn" data-value="Hard">Hard</button>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="form-row">
+      <label class="form-label" for="duration-input">Duration</label>
+      <select class="input-field" id="duration-input">
+        <option value="15">15 minutes</option>
+        <option value="30" selected>30 minutes</option>
+        <option value="45">45 minutes</option>
+        <option value="60">60 minutes</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label" for="num-questions-input">Number of Questions</label>
+      <input type="number" class="input-field" id="num-questions-input" min="3" max="15" value="5">
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-primary btn-block" id="generate-btn" style="margin-top:10px;">
+    Generate Interview
+  </button>
+
+  <div class="loading" id="setup-loading-indicator" hidden>
+    <div class="spinner"></div>
+    <p>Generating your interview questions...</p>
+  </div>
+
+  <div class="error-message" id="setup-error-message" hidden></div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/interview_setup.js') }}"></script>
+{% endblock %}

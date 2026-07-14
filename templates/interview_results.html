@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}InterviewPrep AI - Interview Results{% endblock %}
+
+{% block content %}
+
+<div id="empty-state" class="card upload-box" hidden>
+  <h1 class="section-title">No Results Found</h1>
+  <p class="section-subtitle">It looks like there's no completed interview to show. Start a new one from the dashboard.</p>
+  <a href="/interview" class="btn btn-primary btn-block" style="margin-top:10px;">Back to Dashboard</a>
+</div>
+
+<section id="results-box" hidden>
+
+  <div class="ai-warning-banner" id="results-ai-warning-banner" hidden></div>
+
+  <div class="accordion">
+
+    <!-- Overview -->
+    <div class="accordion-item open">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        Overview
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <div class="score-banner" id="overall-score-banner"></div>
+
+          <h3 class="accordion-subheading">Category Scores</h3>
+          <div id="category-scores"></div>
+
+          <h3 class="accordion-subheading">Summary</h3>
+          <p class="entry-desc" id="summary-text"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Strengths & Weaknesses -->
+    <div class="accordion-item">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        Strengths &amp; Weaknesses
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <div class="two-col">
+            <div class="info-card">
+              <div class="info-card-title">Strengths</div>
+              <div id="strengths-list"></div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-title">Weaknesses</div>
+              <div id="weaknesses-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question-wise review -->
+    <div class="accordion-item">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        Question-wise Review
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <div id="question-review-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="accordion-item">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        AI Suggestions
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <div id="suggestions-list"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="session-nav" style="margin-top:20px;">
+    <a href="/interview/setup" class="btn btn-secondary" style="text-align:center; text-decoration:none;">Retry Interview</a>
+    <button type="button" class="btn btn-primary" id="export-btn">Export Results</button>
+  </div>
+
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/interview_results.js') }}"></script>
+{% endblock %}
