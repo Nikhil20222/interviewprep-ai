@@ -1,9 +1,3 @@
-"""
-ats_checker.py
----------------
-Takes the "ats" slice of the AI insights response and turns it into a
-clean, guaranteed-complete structure for the template.
-"""
 
 VALID_STATUSES = {"Good", "Needs Improvement", "Missing"}
 
@@ -57,3 +51,53 @@ def fallback_ats() -> dict:
         for key, label in ATS_SECTIONS
     ]
     return {"overall_ats_score": 0, "sections": sections}
+
+
+CHECKLIST_ITEMS = [
+    ("email", "Email"),
+    ("phone", "Phone"),
+    ("linkedin", "LinkedIn"),
+    ("skills", "Skills"),
+    ("experience", "Experience"),
+    ("certifications", "Certifications"),
+]
+
+
+def build_checklist(parsed_data: dict) -> list:
+    skills_count = (
+        len(parsed_data.get("skills", []))
+        + len(parsed_data.get("programming_languages", []))
+        + len(parsed_data.get("frameworks", []))
+        + len(parsed_data.get("tools", []))
+    )
+
+    checks = {
+        "email": parsed_data.get("email", "Not Found") != "Not Found",
+        "phone": parsed_data.get("phone", "Not Found") != "Not Found",
+        "linkedin": parsed_data.get("linkedin", "Not Found") != "Not Found",
+        "skills": skills_count > 0,
+        "experience": len(parsed_data.get("work_experience", [])) > 0,
+        "certifications": len(parsed_data.get("certifications", [])) > 0,
+    }
+
+    reasons_missing = {
+        "email": "No email address was found in the resume.",
+        "phone": "No phone number was found in the resume.",
+        "linkedin": "No LinkedIn URL was found - ATS systems often look for this.",
+        "skills": "No skills section was detected.",
+        "experience": "No work experience entries were detected.",
+        "certifications": "No certifications were listed (optional, but adds points).",
+    }
+
+    checklist = []
+    for key, label in CHECKLIST_ITEMS:
+        passed = checks[key]
+        checklist.append(
+            {
+                "key": key,
+                "label": label,
+                "passed": passed,
+                "reason": "Found in resume." if passed else reasons_missing[key],
+            }
+        )
+    return checklist
