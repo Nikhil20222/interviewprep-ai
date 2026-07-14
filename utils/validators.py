@@ -1,10 +1,4 @@
-"""
-validators.py
--------------
-File validation helpers: extension, size, and empty-file checks.
-Kept separate from routes so validation rules can be reused/tested
-independently and extended in later phases (e.g. JD uploads in Phase 2).
-"""
+
 
 import os
 from config import Config

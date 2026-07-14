@@ -1,15 +1,3 @@
-"""
-resume_parser.py
------------------
-Turns raw resume text into a structured dictionary.
-
-Design decision: contact-style fields (email, phone, LinkedIn, GitHub,
-portfolio) are extracted with regex first, because these are
-deterministic and regex is more reliable than an LLM for them and
-avoids hallucination. Everything that requires understanding/context
-(skills, education, experience, projects, etc.) is handed to the AI
-provider with an explicit "never invent, say Not Found" instruction.
-"""
 
 import re
 
