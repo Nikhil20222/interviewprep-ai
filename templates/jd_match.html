@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}InterviewPrep AI - Job Description Match{% endblock %}
+
+{% block content %}
+
+<section class="card upload-box" id="match-upload-box">
+  <h1 class="section-title">Match Your Resume to a Job</h1>
+  <p class="section-subtitle">
+    Upload your resume and a job description to see your match score, missing skills, and tailored suggestions.
+  </p>
+
+  <div class="two-col">
+
+    <!-- Resume upload -->
+    <div>
+      <h3 class="col-heading">Resume</h3>
+      <div class="dropzone" id="resume-dropzone">
+        <input type="file" id="resume-file-input" accept=".pdf,.docx,.txt" hidden>
+        <div class="dropzone-content" id="resume-dropzone-content">
+          <svg class="icon icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p class="dropzone-text">Drag &amp; drop your resume</p>
+          <p class="dropzone-or">or</p>
+          <button type="button" class="btn btn-primary" id="resume-browse-btn">Choose File</button>
+        </div>
+      </div>
+      <div class="file-info" id="resume-file-info" hidden>
+        <div class="file-info-row">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <path d="M14 2v6h6"/>
+          </svg>
+          <span class="file-name" id="resume-file-name">filename.pdf</span>
+          <button type="button" class="btn-remove" id="remove-resume-btn" title="Remove file">&times;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job description input -->
+    <div>
+      <h3 class="col-heading">Job Description</h3>
+      <div class="tabs">
+        <button type="button" class="tab-btn active" id="jd-tab-upload-btn">Upload File</button>
+        <button type="button" class="tab-btn" id="jd-tab-paste-btn">Paste Text</button>
+      </div>
+
+      <div class="tab-panel active" id="jd-panel-upload">
+        <div class="dropzone" id="jd-dropzone">
+          <input type="file" id="jd-file-input" accept=".pdf,.docx,.txt" hidden>
+          <div class="dropzone-content" id="jd-dropzone-content">
+            <svg class="icon icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p class="dropzone-text">Drag &amp; drop the JD file</p>
+            <p class="dropzone-or">or</p>
+            <button type="button" class="btn btn-primary" id="jd-browse-btn">Choose File</button>
+          </div>
+        </div>
+        <div class="file-info" id="jd-file-info" hidden>
+          <div class="file-info-row">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <path d="M14 2v6h6"/>
+            </svg>
+            <span class="file-name" id="jd-file-name">jd.pdf</span>
+            <button type="button" class="btn-remove" id="remove-jd-btn" title="Remove file">&times;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="jd-panel-paste">
+        <textarea class="textarea" id="jd-text-input" placeholder="Paste the job description here..."></textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <button type="button" class="btn btn-primary btn-block" id="analyze-match-btn" style="margin-top:22px;">
+    Analyze Match
+  </button>
+
+  <div class="loading" id="match-loading-indicator" hidden>
+    <div class="spinner"></div>
+    <p>Comparing your resume to the job description...</p>
+  </div>
+
+  <div class="error-message" id="match-error-message" hidden></div>
+</section>
+
+<!-- Result -->
+<section id="result" hidden>
+
+  <div class="ai-warning-banner" id="match-ai-warning-banner" hidden></div>
+
+  <div class="accordion">
+
+    <!-- Job Description -->
+    <div class="accordion-item open">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        Job Description
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <h3 class="accordion-subheading">Uploaded File</h3>
+          <p id="jd-filename-display" class="value"></p>
+
+          <h3 class="accordion-subheading">Extracted Description</h3>
+          <div id="jd-details"></div>
+
+          <h3 class="accordion-subheading">Detected Keywords</h3>
+          <div id="jd-keywords"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resume vs Job Description -->
+    <div class="accordion-item">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        Resume vs Job Description
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <h3 class="accordion-subheading">Overall Match &amp; Role Compatibility</h3>
+          <div class="match-banner" id="match-banner"></div>
+
+          <h3 class="accordion-subheading">Side-by-Side Comparison</h3>
+          <div class="two-col">
+            <div class="info-card" id="resume-summary"></div>
+            <div class="info-card" id="jd-summary"></div>
+          </div>
+
+          <h3 class="accordion-subheading">Strengths &amp; Weak Areas</h3>
+          <div class="two-col">
+            <div class="info-card" id="strengths-card"></div>
+            <div class="info-card" id="weak-areas-card"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Missing Skills -->
+    <div class="accordion-item">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        Missing Skills
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <p class="accordion-note">Skills the job description asks for that weren't found in your resume.</p>
+          <div class="grid" id="missing-skills-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Missing Keywords -->
+    <div class="accordion-item">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        Missing Keywords
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <p class="accordion-note">ATS keyword coverage: <span id="keyword-coverage-percent">—</span></p>
+          <div class="card">
+            <div id="coverage-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resume Optimization -->
+    <div class="accordion-item">
+      <button type="button" class="accordion-header" onclick="toggleSection(this)">
+        Resume Optimization
+        <span class="accordion-arrow">&#9660;</span>
+      </button>
+      <div class="accordion-panel">
+        <div class="accordion-body">
+          <div id="suggestion-groups"></div>
+          <button type="button" class="btn btn-primary download-btn" id="download-btn" hidden>
+            Download Suggestions
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/jd_match.js') }}"></script>
+{% endblock %}
