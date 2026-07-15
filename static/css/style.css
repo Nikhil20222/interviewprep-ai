@@ -1150,9 +1150,6 @@ body.dark .input-field {
   color: #f0f0f0;
 }
 
-/* ==========================================================
-   Phase 3 — interview session (question card, progress bar)
-   ========================================================== */
 
 .question-card {
   border: 1px solid #e2e2e2;
@@ -1282,9 +1279,7 @@ body.dark .btn-danger-outline:hover {
   background-color: #2a1414;
 }
 
-/* ==========================================================
-   Phase 3 — results page (category scores, question review)
-   ========================================================== */
+/* Phase 3 — results page (category scores, question review) */
 
 .category-score-row {
   display: flex;
