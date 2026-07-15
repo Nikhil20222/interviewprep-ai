@@ -180,9 +180,11 @@ Some ideas I want to add later:
 
 # Screenshots
 
-(Add screenshots here)
+<img width="1912" height="876" alt="sd" src="https://github.com/user-attachments/assets/a78cf2c3-f1d0-4924-9793-e81d0bbd412f" />
+<img width="1917" height="906" alt="image" src="https://github.com/user-attachments/assets/554941d5-b87d-4c44-9373-8c8357848deb" />
+<img width="1917" height="907" alt="image" src="https://github.com/user-attachments/assets/65cb2f74-a3b6-41b8-a3a9-aa6c8221b40e" />
 
----
+
 
 # Final Thoughts
 
