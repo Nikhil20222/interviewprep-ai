@@ -1,145 +1,197 @@
-# InterviewPrep AI — Phase 1
+# InterviewPrep AI
 
-Flask app that lets a user upload a resume (PDF/DOCX/TXT) and instantly get:
-1. Resume Preview (structured extracted data)
-2. Resume Analyzer (8 quality scores + explanations)
-3. ATS Compatibility Check (6 checks with Good / Needs Improvement / Missing)
-4. AI Suggestions (current text → improved text, with copy buttons)
+I made this project because before applying for internships I always ended up using different websites.
 
-## How it works (architecture)
+One website for ATS score.
 
-- **Single-page flow.** Upload happens via one AJAX call to `POST /api/analyze-resume`,
-  which does extraction → parsing → scoring → ATS check → suggestions in one request
-  and returns JSON. The page then renders everything client-side. This avoids needing
-  server-side sessions/state across requests, which keeps it simple and reliable on
-  Vercel's stateless serverless functions.
-- **No persistent storage.** The uploaded file is written to `/tmp` (the only writable
-  path on Vercel), processed, and deleted in a `finally` block — nothing is saved to disk
-  or a database.
-- **Contact fields (email/phone/LinkedIn/GitHub/portfolio) are extracted with regex**,
-  not AI, since regex is deterministic and can't hallucinate. Everything that needs
-  understanding (skills, education, experience, projects, scores, suggestions) goes
-  through the AI provider, with prompts that explicitly forbid inventing information.
-- **Multi-provider AI layer.** `services/ai_client.py` abstracts Groq / Gemini /
-  OpenRouter behind one `generate_json()` function. Switch providers anytime via the
-  `AI_PROVIDER` env var — no code changes needed. This is also what will make Phase 4's
-  "Multi-AI Support" easy to add later.
-- **2 AI calls per resume** (not 5+): one call parses resume content, one combined call
-  returns analyzer scores + ATS check + suggestions together. This keeps the app well
-  within free-tier rate limits.
+Another website for resume analysis.
 
-## Project structure
+Then ChatGPT for improving my resume.
 
-```
-interviewprep-ai/
-├── app.py                        # Flask app + routes
-├── config.py                     # All env vars read in one place
-├── vercel.json                   # Vercel routing config
-├── requirements.txt
-├── .env.example
-├── api/
-│   └── index.py                  # Vercel serverless entry point
-├── services/
-│   ├── ai_client.py               # Groq / Gemini / OpenRouter abstraction
-│   ├── file_extractor.py          # PDF/DOCX/TXT -> raw text
-│   ├── resume_parser.py           # raw text -> structured fields
-│   ├── insights_generator.py      # combined AI call (scores + ATS + suggestions)
-│   ├── resume_analyzer.py         # formats analyzer score slice
-│   ├── ats_checker.py             # formats ATS slice
-│   └── suggestions_generator.py   # formats suggestions slice
-├── utils/
-│   ├── validators.py              # file type/size validation
-│   └── file_cleanup.py            # temp file removal
-├── templates/
-│   ├── base.html
-│   └── index.html                 # upload + all result sections
-└── static/
-    ├── css/style.css
-    └── js/main.js                  # drag-drop, fetch, render results
-```
+And again ChatGPT for interview practice.
 
-## Setup
+I wanted everything in one place, so I started building InterviewPrep AI.
+
+---
+
+# Why?
+
+The idea was pretty simple.
+
+Upload a resume, understand what's good and what's missing, compare it with a job description, and finally practice a mock interview before actually applying.
+
+Instead of switching between multiple websites, I wanted one tool that could do all of this.
+
+---
+
+# What it does
+
+### Resume Analysis
+
+- Upload PDF, DOCX or TXT resumes
+- Resume preview with extracted information
+- Resume quality analysis
+- ATS compatibility report
+- AI suggestions for improving the resume
+
+### Resume vs Job Description
+
+- Upload a Job Description
+- Compare resume with the JD
+- Match percentage
+- Missing skills
+- Keyword analysis
+- Suggestions to improve the resume for that role
+
+### Mock Interview
+
+- Generates interview questions using both the resume and the Job Description
+- Interview session page
+- AI feedback after answering
+- Overall interview review and score
+
+---
+
+# Tech Stack
+
+Frontend
+
+- HTML
+- CSS
+- Vanilla JavaScript
+
+Backend
+
+- Flask
+
+AI
+
+- Groq
+- Gemini
+- OpenRouter
+
+Deployment
+
+- Vercel
+
+I kept the stack simple because I wanted to understand everything instead of depending on frameworks.
+
+---
+
+# How it works
+
+The user uploads a resume.
+
+The backend extracts the text and sends it to the AI.
+
+The AI generates resume analysis, ATS checks and suggestions.
+
+If a Job Description is uploaded, the application compares both documents and finds missing skills and keyword matches.
+
+Finally, the user can start a mock interview where questions are generated using both the resume and the Job Description.
+
+After answering the questions, the AI reviews the answers and gives feedback.
+
+---
+
+# Challenges I faced
+
+This project looked much easier before I started building it.
+
+Some things that took much longer than I expected:
+
+- Different resume formats don't always extract text properly.
+- AI models don't always return JSON in the same format, so parsing responses took quite a bit of debugging.
+- Making ATS scores feel useful instead of returning random numbers.
+- Connecting resume analysis, JD matching and mock interviews without breaking the previous features.
+- After redesigning the frontend I had to reconnect almost every backend route again.
+- Testing lots of different resumes because every resume is structured differently.
+- Making sure the interview questions actually use both the resume and the Job Description instead of asking generic questions.
+
+Honestly, I probably spent more time debugging than writing new features.
+
+---
+
+# What I learned
+
+Building this project taught me a lot.
+
+Some of the biggest things I learned were:
+
+- Working with Flask
+- Resume parsing
+- Prompt engineering
+- Connecting multiple AI providers
+- Handling inconsistent AI responses
+- Better frontend and backend communication
+- Debugging real projects instead of small tutorial examples
+
+---
+
+# Running locally
+
+Clone the repository
 
 ```bash
+git clone https://github.com/yourusername/interviewprep-ai.git
+
 cd interviewprep-ai
-python3 -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
+```
+
+Install dependencies
+
+```bash
 pip install -r requirements.txt
-cp .env.example .env
 ```
 
-Edit `.env`:
+Create a `.env` file
 
-```
-AI_PROVIDER=groq          # or gemini / openrouter
-GROQ_API_KEY=your_key_here
+```env
+AI_PROVIDER=groq
+GROQ_API_KEY=your_api_key
 ```
 
-Run locally:
+Run the application
 
 ```bash
 python app.py
 ```
 
-Visit `http://localhost:5000`.
+Open
 
-## Deploying to Vercel
+```
+http://localhost:5000
+```
 
-1. Push this project to a GitHub repo.
-2. Import the repo in Vercel.
-3. In Vercel's Project Settings → Environment Variables, add:
-   - `AI_PROVIDER`
-   - `GROQ_API_KEY` and/or `GEMINI_API_KEY` and/or `OPENROUTER_API_KEY`
-   - (optional) `GROQ_MODEL`, `GEMINI_MODEL`, `OPENROUTER_MODEL`, `MAX_UPLOAD_SIZE_MB`
-4. Deploy. `vercel.json` already routes all traffic to `api/index.py`, which imports
-   the Flask app from the project root.
+---
 
-## Environment variables
+# Future Improvements
 
-| Variable | Required | Default | Notes |
-|---|---|---|---|
-| `AI_PROVIDER` | No | `groq` | `groq` \| `gemini` \| `openrouter` |
-| `GROQ_API_KEY` | Only if using Groq | — | |
-| `GEMINI_API_KEY` | Only if using Gemini | — | |
-| `OPENROUTER_API_KEY` | Only if using OpenRouter | — | |
-| `GROQ_MODEL` | No | `llama-3.3-70b-versatile` | |
-| `GEMINI_MODEL` | No | `gemini-2.0-flash` | |
-| `OPENROUTER_MODEL` | No | `meta-llama/llama-3.3-70b-instruct:free` | |
-| `MAX_UPLOAD_SIZE_MB` | No | `5` | |
-| `AI_TIMEOUT_SECONDS` | No | `30` | |
-| `AI_MAX_RETRIES` | No | `2` | |
+Some ideas I want to add later:
 
-## Dependencies added
+- Voice interviews
+- Download interview reports
+- Interview history
+- Better interview scoring
+- More AI providers
+- User accounts
 
-- `Flask` — web framework
-- `requests` — calls to Groq/Gemini/OpenRouter APIs
-- `pdfplumber` — PDF text extraction (pure Python, Vercel-safe)
-- `python-docx` — DOCX text extraction (pure Python, Vercel-safe)
-- `python-dotenv` — loads `.env` file into environment variables for local dev
-  (on Vercel, env vars are set in Project Settings instead, so this has no effect there)
+---
 
-## Graceful degradation
+# Screenshots
 
-If the AI call fails (bad key, rate limit, network issue), the app doesn't crash:
-- Resume parsing falls back to "Not Found" / empty lists for AI-derived fields
-  (contact fields still work since those are regex-based).
-- Analyzer/ATS/Suggestions fall back to a "could not generate" state, and an
-  `insights_warning` field is included in the JSON response so this is easy to
-  surface/log/debug.
+(Add screenshots here)
 
+---
 
-  ## DEMO
-  <img width="1912" height="977" alt="as" src="https://github.com/user-attachments/assets/4abf62a0-e9d1-4345-95b0-f30d0ace5fae" />
+# Final Thoughts
 
-  <img width="1907" height="920" alt="sd" src="https://github.com/user-attachments/assets/b5f78e05-98dc-461c-a374-68c587de3293" />
+InterviewPrep AI started as a simple resume analyzer.
 
+Then I added Job Description matching.
 
-## What's ready for Phase 2+
+After that I built the mock interview system.
 
-- `services/ai_client.py` already supports 3 providers — adding a 4th for
-  "Multi-AI Support" (Phase 4) is a ~15-line addition.
-- `config.py` is the single place new env vars (e.g. Supabase keys in Phase 5) will go.
-- The JSON contract returned by `/api/analyze-resume` (`parsed_data`) is exactly what
-  Phase 2's "Resume vs JD Match" will need to diff against a parsed job description.
-- No auth/history/database yet, as requested — but the stateless, single-request design
-  means adding a database write (Phase 5) is additive, not a rewrite.
+It slowly became a complete interview preparation tool instead of just another AI wrapper.
+
+There are still many things I want to improve, but I'm happy with how the project has turned out and I learned a lot while building it.
