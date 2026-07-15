@@ -4,6 +4,7 @@
 
 {% block content %}
 
+<!-- Upload -->
 <section class="card upload-box" id="upload-box">
   <h1 class="section-title">Upload Your Resume</h1>
   <p class="section-subtitle">
@@ -26,8 +27,10 @@
   <div class="file-info" id="file-info" hidden>
     <div class="file-info-row">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <path d="M14 2v6h6"/>
+        <rect x="6" y="3" width="12" height="18" rx="1"/>
+        <line x1="9" y1="8" x2="15" y2="8"/>
+        <line x1="9" y1="12" x2="15" y2="12"/>
+        <line x1="9" y1="16" x2="12.5" y2="16"/>
       </svg>
       <span class="file-name" id="file-name">filename.pdf</span>
       <button type="button" class="btn-remove" id="remove-file-btn" title="Remove file">&times;</button>
@@ -43,14 +46,14 @@
   <div class="error-message" id="error-message" hidden></div>
 </section>
 
-
+<!-- Result -->
 <section id="result" hidden>
 
   <div class="ai-warning-banner" id="ai-warning-banner" hidden></div>
 
   <div class="accordion">
 
-  
+    <!-- Resume Stats -->
     <div class="accordion-item open">
       <button type="button" class="accordion-header" onclick="toggleSection(this)">
         Resume Stats
@@ -63,7 +66,7 @@
       </div>
     </div>
 
-
+    <!-- Resume Analysis -->
     <div class="accordion-item">
       <button type="button" class="accordion-header" onclick="toggleSection(this)">
         Resume Analysis
@@ -76,7 +79,6 @@
         </div>
       </div>
     </div>
-
 
     <div class="accordion-item">
       <button type="button" class="accordion-header" onclick="toggleSection(this)">
@@ -99,6 +101,7 @@
       </div>
     </div>
 
+    <!-- Suggestions -->
     <div class="accordion-item">
       <button type="button" class="accordion-header" onclick="toggleSection(this)">
         Suggestions
@@ -111,6 +114,7 @@
       </div>
     </div>
 
+    <!-- Resume Preview -->
     <div class="accordion-item">
       <button type="button" class="accordion-header" onclick="toggleSection(this)">
         Resume Preview
