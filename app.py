@@ -1,13 +1,3 @@
-"""
-app.py
-
-InterviewPrep AI - Phase 1 + Phase 2
-
-Single-page flow: upload happens via one API call that does everything
-(extract, parse, analyze) and sends back JSON, rendered by JS. No
-server-side sessions needed, which keeps this simple on Vercel.
-"""
-
 import os
 import uuid
 
@@ -26,6 +16,9 @@ from services.resume_stats import get_resume_stats
 from services.jd_match_analyzer import analyze_jd, JDMatchError, fallback_result
 from services.match_formatter import format_parsed_jd, build_match
 from services.keyword_matcher import match_skills, keyword_coverage, calculate_match_percentage
+
+from services.interview_generator import generate_interview_questions, InterviewGenerationError
+from services.interview_feedback import generate_interview_feedback, InterviewFeedbackError, fallback_feedback
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = Config.MAX_UPLOAD_SIZE_BYTES
@@ -67,13 +60,13 @@ def analyze_resume():
         if parsed_data.get("_ai_warning"):
             print(f"[AI WARNING - resume parsing] {parsed_data['_ai_warning']}")
 
-        # Plain Python stats - word count, skills found, etc. No AI here.
+        
         stats = get_resume_stats(resume_text, parsed_data)
 
-        # Plain Python checklist - email/phone/linkedin/etc present or not.
+        
         checklist = build_checklist(parsed_data)
 
-        # AI call: scores + ATS notes + suggestions
+        
         try:
             raw_insights = generate_insights(resume_text)
             analysis = format_analysis(raw_insights.get("scores", {}))
@@ -123,10 +116,6 @@ def file_too_large(_error):
     )
 
 
-# ==========================================================
-# Phase 2 — Job Description Intelligence
-# ==========================================================
-
 @app.route("/jd-match")
 def jd_match_page():
     return render_template("jd_match.html", max_size_mb=Config.MAX_UPLOAD_SIZE_MB, active_page="phase2")
@@ -174,7 +163,7 @@ def analyze_match_route():
         resume_parsed = parse_resume(resume_text)
         resume_skills = resume_skill_list(resume_parsed)
 
-        # AI call: JD parsing + suggestions + strengths/weak areas
+        
         try:
             ai_result = analyze_jd(resume_text, jd_text)
             parsed_jd = format_parsed_jd(ai_result.get("parsed_jd", {}))
@@ -193,7 +182,7 @@ def analyze_match_route():
             match_warning = str(exc)
             print(f"[AI WARNING - JD match analysis] {match_warning}")
 
-        # Plain Python: matched/missing skills + keyword coverage + percentage
+        
         matched_skills, missing_skills = match_skills(
             parsed_jd["required_skills"], resume_skills, resume_text
         )
@@ -226,6 +215,131 @@ def analyze_match_route():
     finally:
         safe_remove(resume_temp_path)
         safe_remove(jd_temp_path)
+
+
+@app.route("/interview")
+def interview_dashboard():
+    return render_template("interview_dashboard.html", active_page="phase3")
+
+
+@app.route("/interview/setup")
+def interview_setup_page():
+    return render_template("interview_setup.html", max_size_mb=Config.MAX_UPLOAD_SIZE_MB, active_page="phase3")
+
+
+@app.route("/interview/session")
+def interview_session_page():
+    return render_template("interview_session.html", active_page="phase3")
+
+
+@app.route("/interview/results")
+def interview_results_page():
+    return render_template("interview_results.html", active_page="phase3")
+
+
+@app.route("/api/generate-interview", methods=["POST"])
+def generate_interview_route():
+    resume_file = request.files.get("resume")
+    jd_file = request.files.get("jd_file")
+    jd_text_input = request.form.get("jd_text", "")
+    jd_input_type = request.form.get("jd_input_type", "file")
+
+    role = request.form.get("role", "")
+    difficulty = request.form.get("difficulty", "Medium")
+    interview_type = request.form.get("interview_type", "Mixed")
+    try:
+        num_questions = int(request.form.get("num_questions", 5))
+    except ValueError:
+        num_questions = 5
+    duration = request.form.get("duration", "30")
+
+    resume_temp_path = None
+    jd_temp_path = None
+
+    try:
+        resume_extension = validate_file(resume_file)
+    except ValidationError as exc:
+        return jsonify({"success": False, "error": f"Resume: {exc}"}), 400
+
+    jd_text = None
+    if jd_input_type == "text":
+        try:
+            jd_text = validate_pasted_text(jd_text_input)
+        except ValidationError as exc:
+            return jsonify({"success": False, "error": f"Job description: {exc}"}), 400
+    else:
+        try:
+            jd_extension = validate_file(jd_file)
+        except ValidationError as exc:
+            return jsonify({"success": False, "error": f"Job description: {exc}"}), 400
+
+    try:
+        resume_temp_filename = f"{uuid.uuid4().hex}.{resume_extension}"
+        resume_temp_path = os.path.join(Config.TEMP_UPLOAD_DIR, resume_temp_filename)
+        resume_file.save(resume_temp_path)
+        resume_text = extract_text(resume_temp_path, resume_extension)
+
+        if jd_input_type != "text":
+            jd_temp_filename = f"{uuid.uuid4().hex}.{jd_extension}"
+            jd_temp_path = os.path.join(Config.TEMP_UPLOAD_DIR, jd_temp_filename)
+            jd_file.save(jd_temp_path)
+            jd_text = extract_text(jd_temp_path, jd_extension)
+
+        try:
+            questions = generate_interview_questions(
+                resume_text, jd_text, role, difficulty, interview_type, num_questions
+            )
+        except InterviewGenerationError as exc:
+            print(f"[AI WARNING - interview generation] {exc}")
+            return jsonify({"success": False, "error": f"Could not generate questions: {exc}"}), 502
+
+        return jsonify(
+            {
+                "success": True,
+                "questions": questions,
+                "meta": {
+                    "role": role or "Not specified",
+                    "difficulty": difficulty,
+                    "interview_type": interview_type,
+                    "duration": duration,
+                    "resume_filename": resume_file.filename,
+                    "jd_filename": jd_file.filename if jd_input_type != "text" else None,
+                },
+            }
+        ), 200
+
+    except FileExtractionError as exc:
+        return jsonify({"success": False, "error": str(exc)}), 422
+    except Exception as exc:  # noqa: BLE001
+        return jsonify({"success": False, "error": f"Unexpected error: {exc}"}), 500
+    finally:
+        safe_remove(resume_temp_path)
+        safe_remove(jd_temp_path)
+
+
+@app.route("/api/interview-feedback", methods=["POST"])
+def interview_feedback_route():
+    payload = request.get_json(silent=True) or {}
+    qa_pairs = payload.get("qa_pairs", [])
+    role = payload.get("role", "")
+    interview_type = payload.get("interview_type", "Mixed")
+
+    if not isinstance(qa_pairs, list) or len(qa_pairs) == 0:
+        return jsonify({"success": False, "error": "No answers were submitted."}), 400
+
+    try:
+        feedback = generate_interview_feedback(qa_pairs, role, interview_type)
+        feedback_warning = None
+    except InterviewFeedbackError as exc:
+        feedback = fallback_feedback(qa_pairs)
+        feedback_warning = str(exc)
+        print(f"[AI WARNING - interview feedback] {feedback_warning}")
+
+    response = {"success": True, "feedback": feedback}
+    if feedback_warning:
+        response["feedback_warning"] = feedback_warning
+
+    return jsonify(response), 200
 
 
 if __name__ == "__main__":
